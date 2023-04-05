@@ -1,4 +1,4 @@
-package io.simple.productOrder.core.api.support.error
+package io.simple.productOrder.support.error
 
 import org.springframework.boot.logging.LogLevel
 import org.springframework.http.HttpStatus

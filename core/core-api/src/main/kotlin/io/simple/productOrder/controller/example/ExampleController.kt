@@ -1,4 +1,4 @@
-package io.simple.productOrder.core.api.controller.example
+package io.simple.productOrder.controller.example
 
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping

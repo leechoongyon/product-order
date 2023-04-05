@@ -1,4 +1,4 @@
-package io.simple.productOrder.core.api.support.error
+package io.simple.productOrder.support.error
 
 data class ErrorMessage private constructor(
     val code: String,

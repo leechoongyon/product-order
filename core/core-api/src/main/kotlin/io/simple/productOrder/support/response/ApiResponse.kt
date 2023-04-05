@@ -1,7 +1,7 @@
-package io.simple.productOrder.core.api.support.response
+package io.simple.productOrder.support.response
 
-import io.simple.productOrder.core.api.support.error.ErrorMessage
-import io.simple.productOrder.core.api.support.error.ErrorType
+import io.simple.productOrder.support.error.ErrorMessage
+import io.simple.productOrder.support.error.ErrorType
 
 data class ApiResponse<T> private constructor(
     val result: ResultType,

@@ -1,4 +1,4 @@
-package io.simple.productOrder.core.api.controller
+package io.simple.productOrder.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package io.simple.productOrder.core.api.controller.example
+package io.simple.productOrder.controller.example
 
 class ExampleDto {
     data class Request(

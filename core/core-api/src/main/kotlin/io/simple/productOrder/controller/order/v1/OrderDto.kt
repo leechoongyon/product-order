@@ -1,9 +1,10 @@
-package io.simple.productOrder.core.api.controller.v1
+package io.simple.productOrder.controller.order.v1
 
 class OrderDto {
     data class Request(
         val userId: String,
-        val productId: String
+        val productId: String,
+        val quantity: Int
     )
 
     data class Response(
