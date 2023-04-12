@@ -1,8 +1,7 @@
 package io.simple.productOrder.domain.order
 
-import reactor.core.publisher.Mono
+import reactor.core.publisher.Flux
 
 interface OrderReader {
-    fun getOrder(id: Long): Mono<Order>
-    fun getAllOrders(): Mono<List<Order>>
+    fun getAllOrders(): Flux<Order>
 }

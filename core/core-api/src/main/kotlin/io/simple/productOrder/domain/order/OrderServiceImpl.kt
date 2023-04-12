@@ -1,14 +1,17 @@
 package io.simple.productOrder.domain.order
 
+import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
 class OrderServiceImpl(
     private val orderStore: OrderStore,
-    private val orderReader: OrderReader
-) : OrderService {
+    private val orderReader: OrderReader,
+
+    ) : OrderService {
     @Transactional
     override fun createOrder(createOrder: OrderCommand.CreateOrder): Mono<String> {
         return Mono.just(createOrder)
@@ -16,7 +19,10 @@ class OrderServiceImpl(
             .flatMap { orderStore.store(it) }
     }
 
-    override fun getAllOrders(): Mono<List<OrderInfo.Base>> {
-        return orderReader.getAllOrders()
+    override fun getAllOrders(): Flux<OrderInfo.Base> {
+        return orderReader.getAllOrders().flatMap { order ->
+//            Flux.just(orderInfoMapper.convertOrderInfoBase(order))
+            Flux.just(Mappers.getMapper(OrderInfoMapper::class.java).convertOrderInfoBase(order))
+        }
     }
 }
