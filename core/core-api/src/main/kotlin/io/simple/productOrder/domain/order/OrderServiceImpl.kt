@@ -21,7 +21,6 @@ class OrderServiceImpl(
 
     override fun getAllOrders(): Flux<OrderInfo.Base> {
         return orderReader.getAllOrders().flatMap { order ->
-//            Flux.just(orderInfoMapper.convertOrderInfoBase(order))
             Flux.just(Mappers.getMapper(OrderInfoMapper::class.java).convertOrderInfoBase(order))
         }
     }
