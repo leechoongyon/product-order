@@ -1,10 +1,13 @@
 package io.simple.productOrder.domain.order
 
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
+
 sealed class OrderCommand {
     data class CreateOrder(
-        private val userId: String,
-        private val productId: String,
-        private val quantity: Int
+        @field:NotBlank private val userId: String,
+        @field:NotBlank private val productId: String,
+        @field:Min(1) private val quantity: Int
     ) : OrderCommand() {
         fun toEntity(): Order {
             return Order(

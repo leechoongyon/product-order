@@ -1,12 +1,14 @@
 package io.simple.productOrder.controller.order.v1
 
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
 
 class OrderDto {
     data class Request(
-        val userId: String,
-        val productId: String,
-        val quantity: Int
+        @field:NotBlank val userId: String,
+        @field:NotBlank val productId: String,
+        @field:Min(1) val quantity: Int
     )
 
     data class Response(
