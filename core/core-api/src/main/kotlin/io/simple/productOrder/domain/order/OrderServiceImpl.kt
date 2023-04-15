@@ -17,16 +17,23 @@ class OrderServiceImpl(
 
     @Transactional
     override fun createOrder(createOrder: OrderCommand.CreateOrder): Mono<String> {
-        productExecutor.reduceStock(
+        return productExecutor.reduceStock(
             ProductCommand.ReduceProduct.of(
                 createOrder.getProductId(),
                 createOrder.getQuantity()
             )
         )
-
-        return Mono.just(createOrder)
-            .map { it.toEntity() }
-            .flatMap { orderStore.store(it) }
+            .flatMap {
+                Mono.just(createOrder)
+                    .map { it.toEntity() }
+                    .flatMap { orderStore.store(it) }
+            }
+            .doOnError { e ->
+                // 예외 처리 로직
+            }
+            .onErrorResume { e ->
+                Mono.error(e)
+            }
     }
 
     override fun getAllOrders(): Flux<OrderInfo.Base> {
