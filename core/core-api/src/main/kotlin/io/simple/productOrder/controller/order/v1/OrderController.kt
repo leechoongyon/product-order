@@ -2,6 +2,7 @@ package io.simple.productOrder.controller.order.v1
 
 import io.simple.productOrder.domain.order.OrderService
 import io.simple.productOrder.support.response.ApiResponse
+import jakarta.validation.Valid
 import org.mapstruct.factory.Mappers
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,7 +16,7 @@ class OrderController(
     private val orderService: OrderService,
 ) {
     @PostMapping("/api/v1/orders")
-    fun createOrder(@RequestBody request: OrderDto.Request): Mono<ApiResponse<OrderDto.Response>> {
+    fun createOrder(@RequestBody @Valid request: OrderDto.Request): Mono<ApiResponse<OrderDto.Response>> {
         return orderService.createOrder(
             Mappers.getMapper(OrderDtoMapper::class.java).convertToOrderCommandCreateOrder(request)
         )

@@ -47,6 +47,9 @@ subprojects {
         testImplementation("com.ninja-squad:springmockk:${property("springMockkVersion")}")
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+        implementation("org.springframework.boot:spring-boot-starter-validation")
+
+
         // mapstruct
         annotationProcessor("org.mapstruct:mapstruct-processor:1.5.2.Final")
         kapt("org.springframework.boot:spring-boot-configuration-processor")
