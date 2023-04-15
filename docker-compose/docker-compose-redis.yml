@@ -1,0 +1,13 @@
+# redis
+version: '3.7'
+services:
+  redis:
+    image: redis:alpine # 경량화 버전
+    command: redis-server --port 6379
+    container_name: redis_main
+    hostname: redis_main
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379 # host port 와 container port 연결
