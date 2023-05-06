@@ -22,7 +22,7 @@ dependencies {
 
     // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation("io.lettuce:lettuce-core")
+    implementation("org.redisson:redisson:3.16.2")
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.mysql:mysql-connector-j")

@@ -4,28 +4,36 @@ import io.simple.productOrder.domain.order.OrderCommand
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
+import org.redisson.api.RedissonReactiveClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import java.util.concurrent.ThreadLocalRandom
 
 @Aspect
 @Component
-class DistributedLockAspect(private val distributedLockService: DistributedLockService) {
+class DistributedLockAspect(
+    private val redissonReactiveClient: RedissonReactiveClient
+) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Around("@annotation(DistributedLock)")
     fun lock(joinPoint: ProceedingJoinPoint): Mono<Any?> {
+        logger.info("joinPoint.args : {}", joinPoint.args)
         var lockKey = getLockKey(joinPoint.args)
-        return distributedLockService.acquireLock(lockKey)
+        val lock = redissonReactiveClient.getLock(lockKey)
+        var threadId = ThreadLocalRandom.current().nextLong();
+        return lock.tryLock(threadId)
             .flatMap { lockAcquired ->
+                logger.info("lockAcquired : {}", lockAcquired)
                 if (lockAcquired) {
-                    logger.debug("Lock acquired: $lockKey")
+                    logger.info("Lock acquired: $lockKey")
                     try {
                         joinPoint.proceed() as Mono<Any?>
                     } finally {
-                        distributedLockService.releaseLock(lockKey).subscribe {
-                            logger.debug("Lock released: $lockKey")
+                        lock.unlock(threadId).subscribe {
+                            logger.info("Lock released: $lockKey")
                         }
                     }
                 } else {
