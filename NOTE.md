@@ -1,5 +1,7 @@
 > 나중에 찾아보기 위해 정리한 파일입니다.
 
+
+
 # Redis 관련 (설치)
 
 ### Redis docker 내려받기
@@ -26,6 +28,8 @@
 ### container 종료 명령어
 
 - docker stop [container id]
+
+
 
 # Redis 명령어
 
@@ -56,3 +60,14 @@
 
 - SADD test testValue (저장 명령어)
 - SMEMBERS test (value 조회)
+
+
+
+
+
+# K6 실행 방법
+
+```shell
+k6 run product-order-concurrency-test.js
+```
+

@@ -14,7 +14,7 @@ class DistributedLockService(
     }
 
     fun acquireLock(key: String): Mono<Boolean> {
-        // Redis의 SETNX 명령어를 사용하여 락 획득 (Atomic)
+        // SETNX - lock 획득 (Atomic)
         // key : 저장할 키, "" : 저장 value, timeout : TTL
         return reactiveRedisTemplate.opsForValue()
             .setIfAbsent(
@@ -23,7 +23,7 @@ class DistributedLockService(
     }
 
     fun releaseLock(key: String): Mono<Long> {
-        // Redis의 DEL 명령어를 사용하여 락 해제 (Atomic)
+        // DEL - 락 해제 (Atomic)
         return reactiveRedisTemplate.delete(key)
     }
 }
