@@ -3,6 +3,7 @@ package io.simple.productOrder.domain.order
 import io.simple.productOrder.domain.product.ProductCommand
 import io.simple.productOrder.domain.product.ProductExecutor
 import io.simple.productOrder.support.lock.DistributedLock
+import io.simple.productOrder.support.lock.DistributedLockService
 import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,41 +15,31 @@ class OrderServiceImpl(
     private val orderStore: OrderStore,
     private val orderReader: OrderReader,
     private val productExecutor: ProductExecutor,
-    private val distributedLock: DistributedLock
+    private val distributedLockService: DistributedLockService
 ) : OrderService {
 
+    companion object {
+        const val LOCK_KEY_PREFIX = "product_"
+    }
+
     @Transactional
-    override fun createOrder(createOrder: OrderCommand.CreateOrder): Mono<String> {
-        val lockKey = "product_${createOrder.getProductId()}"
-        return distributedLock.acquireLock(lockKey)
-            .flatMap { lockAcquired ->
-                if (lockAcquired) {
-                    // 락 획득 시, 주문을 생성
-                    productExecutor.reduceStock(
-                        ProductCommand.ReduceProduct.of(
-                            createOrder.getProductId(),
-                            createOrder.getQuantity()
-                        )
-                    )
-                        .flatMap {
-                            Mono.just(createOrder)
-                                .map { it.toEntity() }
-                                .flatMap { orderStore.store(it) }
-                        }
-                        .doFinally {
-                            // 주문 생성 후, 락 해제
-                            distributedLock.releaseLock(lockKey).subscribe()
-                        }
-                } else {
-                    // 락을 획득하지 못한 경우 -> Mono.empty()를 반환
-                    Mono.empty()
-                }
+    @DistributedLock(key = LOCK_KEY_PREFIX + "{createOrderRequest.productId}")
+    override fun createOrder(createOrderRequest: OrderCommand.CreateOrder): Mono<String> {
+        return productExecutor.reduceStock(
+            ProductCommand.ReduceProduct.of(
+                createOrderRequest.getProductId(),
+                createOrderRequest.getQuantity()
+            )
+        )
+            .flatMap {
+                Mono.just(createOrderRequest)
+                    .map { it.toEntity() }
+                    .flatMap { orderStore.store(it) }
             }
             .onErrorResume { e ->
-                // 에러 발생 시, 락 해제
-                distributedLock.releaseLock(lockKey).then(Mono.error(e))
+                // 예외 처리 로직
+                Mono.error(Exception("createOrder 처리 중 예외 발생", e))
             }
-            .switchIfEmpty(Mono.error(Exception("락을 획득하지 못했습니다.")))
     }
 
     override fun getAllOrders(): Flux<OrderInfo.Base> {
