@@ -3,7 +3,6 @@ package io.simple.productOrder.domain.order
 import io.simple.productOrder.domain.product.ProductCommand
 import io.simple.productOrder.domain.product.ProductExecutor
 import io.simple.productOrder.support.lock.DistributedLock
-import io.simple.productOrder.support.lock.DistributedLockService
 import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,8 +13,7 @@ import reactor.core.publisher.Mono
 class OrderServiceImpl(
     private val orderStore: OrderStore,
     private val orderReader: OrderReader,
-    private val productExecutor: ProductExecutor,
-    private val distributedLockService: DistributedLockService
+    private val productExecutor: ProductExecutor
 ) : OrderService {
 
     companion object {
