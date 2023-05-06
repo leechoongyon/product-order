@@ -7,25 +7,29 @@ import org.aspectj.lang.annotation.Aspect
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import java.util.concurrent.ThreadLocalRandom
 
 @Aspect
 @Component
-class DistributedLockAspect(private val distributedLockService: DistributedLockService) {
+class DistributedLockAspect(
+    private val distributedLockService: DistributedLockService
+) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Around("@annotation(DistributedLock)")
     fun lock(joinPoint: ProceedingJoinPoint): Mono<Any?> {
-        var lockKey = getLockKey(joinPoint.args)
-        return distributedLockService.acquireLock(lockKey)
+        val lockKey = getLockKey(joinPoint.args)
+        val threadId = ThreadLocalRandom.current().nextLong()
+        return distributedLockService.acquireLock(lockKey, threadId)
             .flatMap { lockAcquired ->
                 if (lockAcquired) {
-                    logger.debug("Lock acquired: $lockKey")
+                    logger.info("Lock acquired: $lockKey, threadId: $threadId")
                     try {
                         joinPoint.proceed() as Mono<Any?>
                     } finally {
-                        distributedLockService.releaseLock(lockKey).subscribe {
-                            logger.debug("Lock released: $lockKey")
+                        distributedLockService.releaseLock(lockKey, threadId).subscribe {
+                            logger.info("Lock released: $lockKey, threadId: $threadId")
                         }
                     }
                 } else {
