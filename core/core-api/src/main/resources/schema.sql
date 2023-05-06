@@ -18,8 +18,8 @@ create TABLE IF NOT EXISTS product (
 -- product dml
 insert into product (id, name, stock)
 values
-  ('product1001', 'Product A', 100),
-  ('product1002', 'Product B', 200),
-  ('product1003', 'Product C', 300),
-  ('product1004', 'Product D', 400),
-  ('product1005', 'Product E', 500);
+  ('product1001', 'Product A', 1000),
+  ('product1002', 'Product B', 2000),
+  ('product1003', 'Product C', 3000),
+  ('product1004', 'Product D', 4000),
+  ('product1005', 'Product E', 5000);
