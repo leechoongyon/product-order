@@ -2,11 +2,7 @@
 
 - 상품 주문 토이프로젝트
 
-
-
 # 프로젝트 시작 방법
-
-
 
 ### docker-compose 로 redis 실행
 
@@ -16,8 +12,6 @@
 ```yaml
 docker-compose -f ./docker-compose-redis.yml up -d
 ```
-
-
 
 ### redis 동작 확인
 
@@ -31,13 +25,9 @@ ping 명령어 입력
 PONT 답변
 ```
 
-
-
-### CoreApplication 실행
+### CoreApiApplication 실행
 
 - 실행하면서 schema.sql 실행되면서 product_order, product 테이블이 생성되며, 데이터가 INSERT 됩니다.
-
-
 
 ### 상품 주문 API 호출
 
@@ -54,8 +44,6 @@ curl --location --request POST 'localhost:8080/api/v1/orders' \
 }'
 ```
 
-
-
 ### 상품 주문 확인 API 호출
 
 - 아래 API 를 호출하면 내가 주문한 내역을 확인할 수 있습니다.
@@ -65,8 +53,6 @@ curl --location --request GET 'localhost:8080/api/v1/orders' \
 --header 'Content-Type: application/json' \
 --data-raw ''
 ```
-
-
 
 `혹시 product 에 대한 재고를 살펴보고 싶으면 H2 접속해서 select 쿼리 날려보면 됩니다.`
 
